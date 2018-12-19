@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Content Type Editor - Magnolia</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Content Types GUI">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!--https://favicon.io/emoji-favicons/butterfly/-->
+    <link rel="icon" href="/static/favicon.ico" type="image/ico">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="content-types" style="margin:auto;max-width:500px;">
+    <h1>Magnolia Content Type Generator</h1>
+    <br>
+    <h2>Settings</h2>
+    <hr>
+    <br>
+    <label>Workspace name:</label><input type="text" v-model="workspaceName"/>
+    <br>
+    <br>
+    <h2>Properties</h2>
+    <hr>
+    <div v-for="(property,index) in properties" :key="index">
+        {{ property.name }}
+        {{ property.type }}
+        <button @click="deleteProp(index)">-</button>
+    </div>
+    <div><h3>Add a New Property:</h3>
+        <label>Name</label><input v-model="newPropName"/>
+        <label>Type</label>
+        <select v-model="newPropType">
+            <option>String</option>
+            <option>Date</option>
+            <option>Boolean</option>
+        </select>
+        <button @click="addNewProp()" :disabled="newPropName===''">+</button>
+        </button>
+    </div>
+    <br>
+    <br>
+    <h2>Output</h2>
+    <hr>
+    <br>
+    <a v-if="workspaceName!=='' && properties.length > 0" href="https://www.json2yaml.com/" target="_blank">Convert to
+        yaml here ></a>
+    <br>
+    <br>
+    <textarea rows="10" style="min-width:400px">{{ contentTypeAsYaml }}</textarea>
+</div>
+
+<script>
+
+    // CONSTANTS
+    // might need to avoid spaces
+    const unnamedProp = 'Unnamed Property';
+    // allowedPropTypes does not include String, because we do not add that in the yaml definition
+    const allowedPropTypes = ['Date', 'Boolean'];
+
+    // todo allow for the user to supply an example of the data that would be in that field
+    new Vue({
+        el: '#content-types',
+        data: function () {
+            return {
+                workspaceName: '',
+                properties: [],
+                eventVal: '',
+                newPropName: '',
+                newPropType: 'String'
+            }
+        },
+        computed: {
+            contentTypeAsYaml() {
+            //    todo convert contentTypeAsJson to yaml and return it here
+                return this.contentTypeAsJson;
+            },
+            contentTypeAsJson() {
+                return {
+                    dataSources: {
+                        workspace: this.workspaceName,
+                        autoCreate: true
+                    },
+                    model: {
+                        properties: this.properties
+                    }
+                }
+            }
+        },
+        methods: {
+            addNewProp() {
+                if (!this.newPropName) this.newPropName = unnamedProp;
+                if (this.newPropType && allowedPropTypes.includes(this.newPropType)) {
+                    this.properties.push({name: this.newPropName, type: this.newPropType});
+                } else {
+                    this.properties.push({name: this.newPropName});
+                    this.newPropName = '';
+                }
+            },
+            deleteProp(indexToDelete) {
+                this.properties.splice(indexToDelete, 1);
+            }
+        }
+    });
+</script>
+
+
+</body>
+</html>

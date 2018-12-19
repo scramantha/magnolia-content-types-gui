@@ -1,0 +1,16 @@
+{
+  "name": "magnolia-content-types-gui",
+  "version": "1.0.0-alpha",
+  "description": "GUI for generating Content Types yaml configurations to use in Magnolia CMS",
+  "keywords": [
+    "magnolia",
+    "content-types",
+    "vue"
+  ],
+  "author": "Sam Mannino <samantha.mannino@adyen.com>",
+  "contributors": [
+    "Viktor Ivanovski <viktor.ivanovski@codeit.mk>",
+    "Pim Willems <pim.willems@adyen.com>"
+  ],
+  "license": "MIT"
+}
